@@ -12,7 +12,7 @@
 #'
 #' @param Formula an object of class "formula" (or one that can be coerced to that class): a symbolic description of the model to be fitted. The details of model specification are given under ‘Details’.
 #' @param Data a data frame, list or environment (or object coercible by as.data.frame to a data frame) containing the variables in the model.
-#' @param Complete a boolean to change the result output. True will give you a table including between, within and total summary values. False will omnly give you the variance components themselves.
+#' @param Complete (Default False) an optional boolean to change the result output. True will give you a table including between, within and total summary values. False will only give you the variance components themselves.
 #'
 #' @return POV returns a table of variance components.
 #'
