@@ -12,7 +12,7 @@
 #'
 #' @param Formula an object of class "formula" (or one that can be coerced to that class): a symbolic description of the model to be fitted. The details of model specification are given under ‘Details’.
 #' @param Data a data frame, list or environment (or object coercible by as.data.frame to a data frame) containing the variables in the model.
-#' @param Complete a boolean to change the result. True will give you a table including between, within and total summary values. False will omnly give you the variance components themselves.
+#' @param Complete a boolean to change the result output. True will give you a table including between, within and total summary values. False will omnly give you the variance components themselves.
 #'
 #' @return POV returns a table of variance components.
 #'
@@ -22,7 +22,8 @@
 #'
 #' Between variance is the variance due to change in Mean. Within variance is the variance due to the change in StdDev. Common variance is the minimum variance common to all categories.
 #'
-#' @examples POV(Etch.Depth ~ Lot + Wafer %in% Lot, dt)
+#' @examples POV(Response ~ Machine * Metrology, Data = dt, Complete = TRUE)
+#'
 #' @export POV
 POV <- function(Formula, Data, Complete=FALSE) {
   model <- lm(Formula, data = Data)
@@ -78,8 +79,8 @@ POV <- function(Formula, Data, Complete=FALSE) {
     FullSDComponents <- sqrt(FullVarianceComponents)
     FullPercentComponents <- 100*FullVarianceComponents/as.vector(popVar)
     FullComponents <- c("Between Total", paste("  Between ", ComponentNames, sep = ""),"Within Total", paste("  Within ", ComponentNames, sep = ""),"  Common", "Total")
-    FullPOV <- data.frame(FullComponents, FullVarianceComponents, FullSDComponents, FullPercentComponents)
-    colnames(FullPOV) <- c("Component", "Variance", "StdDev", "% of total")
+    FullPOV <- data.frame(FullVarianceComponents, FullSDComponents, FullPercentComponents, row.names = FullComponents)
+    colnames(FullPOV) <- c("Variance", "StdDev", "% of total")
     return(FullPOV)
   } else {
     #Compute POV table without group sums
@@ -87,8 +88,8 @@ POV <- function(Formula, Data, Complete=FALSE) {
     SDComponents <- sqrt(VarianceComponents)
     PercentComponents <- 100*VarianceComponents/sum(VarianceComponents)
     Components <- c(paste("Between ", ComponentNames, sep = ""),paste("Within ", ComponentNames, sep = ""),"Common")
-    povComponents <- data.frame(Components, VarianceComponents, SDComponents, PercentComponents)
-    colnames(povComponents) <- c("Component", "Variance", "StdDev", "% of total")
+    povComponents <- data.frame(VarianceComponents, SDComponents, PercentComponents, row.names = Components)
+    colnames(povComponents) <- c("Variance", "StdDev", "% of total")
     return(povComponents)
   }
 }

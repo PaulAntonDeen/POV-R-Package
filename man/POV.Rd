@@ -4,12 +4,14 @@
 \alias{POV}
 \title{Partition of Variation}
 \usage{
-POV(Formula, Data)
+POV(Formula, Data, Complete = FALSE)
 }
 \arguments{
 \item{Formula}{an object of class "formula" (or one that can be coerced to that class): a symbolic description of the model to be fitted. The details of model specification are given under ‘Details’.}
 
 \item{Data}{a data frame, list or environment (or object coercible by as.data.frame to a data frame) containing the variables in the model.}
+
+\item{Complete}{a boolean to change the result output. True will give you a table including between, within and total summary values. False will omnly give you the variance components themselves.}
 }
 \value{
 POV returns a table of variance components.
@@ -19,7 +21,12 @@ Partition of Variation
 }
 \details{
 Models for pov are specified symbolically. A typical model has the form response ~ terms where response is the (numeric) response vector and terms is a series of terms which specifies a linear predictor for response. A terms specification of the form first + second indicates all the terms in first together with all the terms in second with duplicates removed. A specification of the form first:second indicates the set of terms obtained by taking the interactions of all terms in first with all terms in second. The specification first*second indicates the cross of first and second. This is the same as first + second + first:second.
+
+Variables on the right hand side of the model should be converted to factors before running.
+
+Between variance is the variance due to change in Mean. Within variance is the variance due to the change in StdDev. Common variance is the minimum variance common to all categories.
 }
 \examples{
-POV(Etch.Depth ~ Lot + Wafer \%in\% Lot, dt)
+POV(Response ~ Machine * Metrology, Data = dt, Complete = TRUE)
+
 }
