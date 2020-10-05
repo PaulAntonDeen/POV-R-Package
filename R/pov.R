@@ -22,72 +22,72 @@
 #'
 #' Between variance is the variance due to change in Mean. Within variance is the variance due to the change in StdDev. Common variance is the minimum variance common to all categories.
 #'
-#' @examples POV(Response ~ Machine * Metrology, Data = dt, Complete = TRUE)
-#'
+#' @examples
+#' POV(Response ~ Machine * Metrology, Data = dt, Complete = TRUE)
 #' @export POV
-POV <- function(Formula, Data, Complete=FALSE) {
+POV <- function(Formula, Data, Complete = FALSE) {
   model <- lm(Formula, data = Data)
   modelterms <- all.vars(Formula, Data)
-  Var <- 	var(Data[modelterms[1]])
-  N <- 	nobs(model)
-  popVar <- (N-1)/N * Var
+  Var <- var(Data[modelterms[1]])
+  N <- nobs(model)
+  popVar <- (N - 1) / N * Var
 
 
-  #Get RSS components
+  # Get RSS components
   RSSTotal <- anova(model)
-  RSSBetween <- sum(RSSTotal$`Sum Sq`)-RSSTotal$`Sum Sq`[length(RSSTotal$`Sum Sq`)]
+  RSSBetween <- sum(RSSTotal$`Sum Sq`) - RSSTotal$`Sum Sq`[length(RSSTotal$`Sum Sq`)]
   RSSWithin <- RSSTotal$`Sum Sq`[length(RSSTotal$`Sum Sq`)]
   ComponentNames <- broom::tidy(RSSTotal)$term
   ComponentNames <- ComponentNames[-length(ComponentNames)]
 
-  #Get total variances
-  VarWithinTotal <- RSSWithin/sum(RSSTotal$`Sum Sq`) * popVar
+  # Get total variances
+  VarWithinTotal <- RSSWithin / sum(RSSTotal$`Sum Sq`) * popVar
   VarBetweenTotal <- popVar - VarWithinTotal
 
-  #Get between variance components
-  BetweenVarComponents <- as.vector(VarBetweenTotal) * RSSTotal$`Sum Sq`/RSSBetween
+  # Get between variance components
+  BetweenVarComponents <- as.vector(VarBetweenTotal) * RSSTotal$`Sum Sq` / RSSBetween
   BetweenVarComponents <- BetweenVarComponents[-length(BetweenVarComponents)]
 
-  #Get variance table
-  VarTable <- aggregate( Formula, data=Data, FUN=var, drop=FALSE, simplify=FALSE)
+  # Get variance table
+  VarTable <- aggregate(Formula, data = Data, FUN = var, drop = FALSE, simplify = FALSE)
   names(VarTable)[ncol(VarTable)] <- "rowVariance"
-  VarTableN <- aggregate( Formula, data=Data, FUN=NROW, drop=FALSE, simplify=FALSE)
+  VarTableN <- aggregate(Formula, data = Data, FUN = NROW, drop = FALSE, simplify = FALSE)
   names(VarTableN)[ncol(VarTableN)] <- "rowN"
   VarTable$rowN <- VarTableN$rowN
   VarTable <- VarTable[!(VarTable$rowN == "NULL"), ]
   VarTable[is.na(VarTable)] <- 0
   VarTable$rowVariance <- as.numeric(VarTable$rowVariance)
   VarTable$rowN <- as.numeric(VarTable$rowN)
-  VarTable$popVar <- with(VarTable, rowVariance*(rowN-1)/rowN )
+  VarTable$popVar <- with(VarTable, rowVariance * (rowN - 1) / rowN)
   CommonVar <- min(VarTable$popVar)
 
-  #Within variance components
+  # Within variance components
   formwithin <- Formula
   formula.tools::lhs(formwithin) <- quote(popVar)
   modelwithin <- lm(formwithin, data = VarTable)
   WithinComponentsRSS <- suppressWarnings(anova(modelwithin)$`Sum Sq`)
-  if(sum(WithinComponentsRSS)==0){
-    #Make all 0
-    WithinVarComponents <- as.vector(VarWithinTotal-CommonVar) * WithinComponentsRSS[-length(WithinComponentsRSS)]
+  if (sum(WithinComponentsRSS) == 0) {
+    # Make all 0
+    WithinVarComponents <- as.vector(VarWithinTotal - CommonVar) * WithinComponentsRSS[-length(WithinComponentsRSS)]
   } else {
-    WithinVarComponents <- as.vector(VarWithinTotal-CommonVar) * WithinComponentsRSS[-length(WithinComponentsRSS)]/sum(WithinComponentsRSS)
+    WithinVarComponents <- as.vector(VarWithinTotal - CommonVar) * WithinComponentsRSS[-length(WithinComponentsRSS)] / sum(WithinComponentsRSS)
   }
 
-  if(Complete) {
-    #Compute POV table with group sums
-    FullVarianceComponents <- c(VarBetweenTotal,BetweenVarComponents,VarWithinTotal,WithinVarComponents,CommonVar,popVar)
+  if (Complete) {
+    # Compute POV table with group sums
+    FullVarianceComponents <- c(VarBetweenTotal, BetweenVarComponents, VarWithinTotal, WithinVarComponents, CommonVar, popVar)
     FullSDComponents <- sqrt(FullVarianceComponents)
-    FullPercentComponents <- 100*FullVarianceComponents/as.vector(popVar)
-    FullComponents <- c("Between Total", paste("  Between ", ComponentNames, sep = ""),"Within Total", paste("  Within ", ComponentNames, sep = ""),"  Common", "Total")
+    FullPercentComponents <- 100 * FullVarianceComponents / as.vector(popVar)
+    FullComponents <- c("Between Total", paste("  Between ", ComponentNames, sep = ""), "Within Total", paste("  Within ", ComponentNames, sep = ""), "  Common", "Total")
     FullPOV <- data.frame(FullVarianceComponents, FullSDComponents, FullPercentComponents, row.names = FullComponents)
     colnames(FullPOV) <- c("Variance", "StdDev", "% of total")
     return(FullPOV)
   } else {
-    #Compute POV table without group sums
-    VarianceComponents <- c(BetweenVarComponents,WithinVarComponents,CommonVar)
+    # Compute POV table without group sums
+    VarianceComponents <- c(BetweenVarComponents, WithinVarComponents, CommonVar)
     SDComponents <- sqrt(VarianceComponents)
-    PercentComponents <- 100*VarianceComponents/sum(VarianceComponents)
-    Components <- c(paste("Between ", ComponentNames, sep = ""),paste("Within ", ComponentNames, sep = ""),"Common")
+    PercentComponents <- 100 * VarianceComponents / sum(VarianceComponents)
+    Components <- c(paste("Between ", ComponentNames, sep = ""), paste("Within ", ComponentNames, sep = ""), "Common")
     povComponents <- data.frame(VarianceComponents, SDComponents, PercentComponents, row.names = Components)
     colnames(povComponents) <- c("Variance", "StdDev", "% of total")
     return(povComponents)

@@ -28,5 +28,4 @@ Between variance is the variance due to change in Mean. Within variance is the v
 }
 \examples{
 POV(Response ~ Machine * Metrology, Data = dt, Complete = TRUE)
-
 }
