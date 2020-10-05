@@ -3,7 +3,7 @@ Type: Package
 Title: Partition Of Variation Engine
 Version: 0.1.0
 Author: Paul Deen
-Maintainer: The package maintainer <paulext@gmail.com>
+Maintainer: Paul Deen <paulext@gmail.com>
 Description: Partition of Variation Engine based on an invention by dr. Thomas A Little.
 License: GPL-3
 Encoding: UTF-8
