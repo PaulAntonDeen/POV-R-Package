@@ -2,7 +2,7 @@
 title: "Partition of Variation"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{POV-vignette}
+  %\VignetteIndexEntry{POV}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
