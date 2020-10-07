@@ -11,7 +11,7 @@ POV(Formula, Data, Complete = FALSE)
 
 \item{Data}{a data frame, list or environment (or object coercible by as.data.frame to a data frame) containing the variables in the model.}
 
-\item{Complete}{a boolean to change the result output. True will give you a table including between, within and total summary values. False will omnly give you the variance components themselves.}
+\item{Complete}{(Default False) an optional boolean to change the result output. True will give you a table including between, within and total summary values. False will only give you the variance components themselves.}
 }
 \value{
 POV returns a table of variance components.

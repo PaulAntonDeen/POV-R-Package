@@ -26,15 +26,15 @@
 #' POV(Response ~ Machine * Metrology, Data = dt, Complete = TRUE)
 #' @export POV
 POV <- function(Formula, Data, Complete = FALSE) {
-  model <- lm(Formula, data = Data)
+  model <- stats::lm(Formula, data = Data)
   modelterms <- all.vars(Formula, Data)
-  Var <- var(Data[modelterms[1]])
-  N <- nobs(model)
-  popVar <- (N - 1) / N * Var
+  SampleVar <- stats::var(Data[modelterms[1]])
+  N <- stats::nobs(model)
+  popVar <- (N - 1) / N * SampleVar
 
 
   # Get RSS components
-  RSSTotal <- anova(model)
+  RSSTotal <- stats::anova(model)
   RSSBetween <- sum(RSSTotal$`Sum Sq`) - RSSTotal$`Sum Sq`[length(RSSTotal$`Sum Sq`)]
   RSSWithin <- RSSTotal$`Sum Sq`[length(RSSTotal$`Sum Sq`)]
   ComponentNames <- broom::tidy(RSSTotal)$term
@@ -49,9 +49,9 @@ POV <- function(Formula, Data, Complete = FALSE) {
   BetweenVarComponents <- BetweenVarComponents[-length(BetweenVarComponents)]
 
   # Get variance table
-  VarTable <- aggregate(Formula, data = Data, FUN = var, drop = FALSE, simplify = FALSE)
+  VarTable <- stats::aggregate(Formula, data = Data, FUN = stats::var, drop = FALSE, simplify = FALSE)
   names(VarTable)[ncol(VarTable)] <- "rowVariance"
-  VarTableN <- aggregate(Formula, data = Data, FUN = NROW, drop = FALSE, simplify = FALSE)
+  VarTableN <- stats::aggregate(Formula, data = Data, FUN = NROW, drop = FALSE, simplify = FALSE)
   names(VarTableN)[ncol(VarTableN)] <- "rowN"
   VarTable$rowN <- VarTableN$rowN
   VarTable <- VarTable[!(VarTable$rowN == "NULL"), ]
@@ -64,8 +64,8 @@ POV <- function(Formula, Data, Complete = FALSE) {
   # Within variance components
   formwithin <- Formula
   formula.tools::lhs(formwithin) <- quote(popVar)
-  modelwithin <- lm(formwithin, data = VarTable)
-  WithinComponentsRSS <- suppressWarnings(anova(modelwithin)$`Sum Sq`)
+  modelwithin <- stats::lm(formwithin, data = VarTable)
+  WithinComponentsRSS <- suppressWarnings(stats::anova(modelwithin)$`Sum Sq`)
   if (sum(WithinComponentsRSS) == 0) {
     # Make all 0
     WithinVarComponents <- as.vector(VarWithinTotal - CommonVar) * WithinComponentsRSS[-length(WithinComponentsRSS)]

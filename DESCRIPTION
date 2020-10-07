@@ -1,10 +1,10 @@
 Package: POV
 Type: Package
-Title: Partition Of Variation Engine
-Version: 0.1.0
+Title: Partition of Variation Engine
+Version: 0.1.1
 Author: Paul Deen
 Maintainer: Paul Deen <paulext@gmail.com>
-Description: Partition of Variation Engine based on an invention by dr. Thomas A Little.
+Description: Partition of Variation Engine based on an invention by Dr. Thomas A Little.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
