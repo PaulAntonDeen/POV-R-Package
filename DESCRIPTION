@@ -1,7 +1,7 @@
 Package: POV
 Type: Package
 Title: Partition of Variation variance component analysis method
-Version: 0.1.1
+Version: 0.1.2
 Author: Paul Deen
 Maintainer: Paul Deen <paulext@gmail.com>
 Description: An implementation of the pov method as developped by
