@@ -1,10 +1,20 @@
 Package: POV
 Type: Package
-Title: Partition of Variation Engine
+Title: Partition of Variation variance component analysis method
 Version: 0.1.1
 Author: Paul Deen
 Maintainer: Paul Deen <paulext@gmail.com>
-Description: Partition of Variation Engine based on an invention by Dr. Thomas A Little.
+Description: An implementation of the pov method as developped by
+    dr. Thomas A Little <https://thomasalittleconsulting.com> in 1993 for the
+    analysis of semiconductor data for hard drive manufacturing. POV is based
+    on ANOVA and sequential sum of squares and is an exact method that explains
+    all observed variation. It quantitates both the between and within factor
+    variation effects and can quantitate the influence of both continuous and
+    categorical factors.
+Authors@R: person("Paul", "Deen", email = "paulext@gmail.com",
+  role = c("aut", "cre"))
+URL: https://github.com/PaulAntonDeen/POV-R-Package, https://thomasalittleconsulting.com
+BugReports: https://github.com/PaulAntonDeen/POV-R-Package/issues
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
