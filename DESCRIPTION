@@ -1,10 +1,10 @@
 Package: POV
 Type: Package
-Title: Partition of Variation variance component analysis method
-Version: 0.1.2
-Author: Paul Deen
+Title: Partition of Variation Variance Component Analysis Method
+Version: 0.1.3
+Author: Paul Deen [aut, cre]
 Maintainer: Paul Deen <paulext@gmail.com>
-Description: An implementation of the pov method as developped by
+Description: An implementation of the POV method as developed by
     dr. Thomas A Little <https://thomasalittleconsulting.com> in 1993 for the
     analysis of semiconductor data for hard drive manufacturing. POV is based
     on ANOVA and sequential sum of squares and is an exact method that explains
